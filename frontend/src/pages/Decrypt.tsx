@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Unlock, AlertCircle, CheckCircle, Sparkles, FileText, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { encryptionApi, type EncryptedData } from '@/lib/api'
@@ -11,8 +11,18 @@ export default function Decrypt() {
   const [encryptedFile, setEncryptedFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [plaintext, setPlaintext] = useState('')
-  const [decryptedFileData, setDecryptedFileData] = useState<{data: string, filename: string} | null>(null)
+  const [decryptedFileData, setDecryptedFileData] = useState<{ filename: string, data: string } | null>(null)
   const [error, setError] = useState('')
+  const resultRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to results when decryption succeeds
+  useEffect(() => {
+    if ((plaintext || decryptedFileData) && resultRef.current) {
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [plaintext, decryptedFileData])
 
   const handleDecrypt = async () => {
     if (!password) {
@@ -374,7 +384,7 @@ export default function Decrypt() {
 
       {/* Text Result */}
       {plaintext && (
-        <section className="max-w-3xl mx-auto px-4 md:px-6 mt-6 md:mt-8">
+        <section ref={resultRef} className="max-w-3xl mx-auto px-4 md:px-6 mt-6 md:mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -401,7 +411,7 @@ export default function Decrypt() {
 
       {/* File Result */}
       {decryptedFileData && (
-        <section className="max-w-3xl mx-auto px-4 md:px-6 mt-6 md:mt-8">
+        <section ref={resultRef} className="max-w-3xl mx-auto px-4 md:px-6 mt-6 md:mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

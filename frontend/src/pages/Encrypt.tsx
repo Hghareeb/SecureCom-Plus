@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Lock, FileText, Copy, QrCode, Check, AlertCircle, Sparkles, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { encryptionApi, qrApi, type EncryptedData } from '@/lib/api'
@@ -25,8 +25,18 @@ export default function Encrypt() {
   } | null>(null)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const resultRef = useRef<HTMLDivElement>(null)
 
   const passwordStrength = checkPasswordStrength(password)
+
+  // Auto-scroll to results when encryption succeeds
+  useEffect(() => {
+    if (result && resultRef.current) {
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [result])
 
   const handleEncryptText = async () => {
     if (!plaintext || !password) {
@@ -336,24 +346,83 @@ export default function Encrypt() {
       <AnimatePresence>
         {result && (
           <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            className="max-w-3xl mx-auto px-6"
+            ref={resultRef}
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            transition={{ type: "spring", duration: 0.6, bounce: 0.4 }}
+            className="max-w-3xl mx-auto px-6 relative"
           >
-            <div className="p-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-800 rounded-3xl shadow-xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-red-500 rounded-xl">
+            {/* Celebration Particles */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-3 h-3 rounded-full"
+                style={{
+                  background: `linear-gradient(45deg, ${['#ef4444', '#f97316', '#fbbf24'][i % 3]}, ${['#dc2626', '#ea580c', '#f59e0b'][i % 3]})`,
+                  left: '50%',
+                  top: '20px',
+                }}
+                initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
+                animate={{
+                  scale: [0, 1, 0],
+                  x: [0, Math.cos(i * 30 * Math.PI / 180) * 150],
+                  y: [0, Math.sin(i * 30 * Math.PI / 180) * 150],
+                  opacity: [1, 1, 0],
+                }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              />
+            ))}
+
+            <motion.div
+              initial={{ rotateY: -90 }}
+              animate={{ rotateY: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="p-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-200 dark:border-red-800 rounded-3xl shadow-2xl relative overflow-hidden"
+            >
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                initial={{ x: '-100%' }}
+                animate={{ x: '200%' }}
+                transition={{ duration: 1.5, delay: 0.3 }}
+              />
+
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", delay: 0.3, duration: 0.6 }}
+                className="flex items-center gap-3 mb-6 relative z-10"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.5, repeat: 2 }}
+                  className="p-3 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl shadow-lg"
+                >
                   <Check className="w-6 h-6 text-white" />
-                </div>
+                </motion.div>
                 <div>
-                  <h2 className="text-2xl font-black text-gray-900 dark:text-white">Encryption Successful!</h2>
-                  <p className="text-sm text-orange-600 dark:text-orange-400">Your data is now secure</p>
+                  <motion.h2
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-2xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent"
+                  >
+                    🎉 Encryption Successful!
+                  </motion.h2>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-sm text-orange-600 dark:text-orange-400"
+                  >
+                    Your data is now secure with military-grade encryption
+                  </motion.p>
                 </div>
-              </div>
+              </motion.div>
 
               {result.emoji && (
-                <div className="mb-6 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+                <div className="mb-6 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 relative z-10">
                   <div className="flex justify-between items-center mb-3">
                     <label className="text-sm font-bold text-gray-900 dark:text-white">😀 Emoji Ciphertext</label>
                     <motion.button
@@ -377,7 +446,7 @@ export default function Encrypt() {
                 </div>
               )}
 
-              <div className="mb-6 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+              <div className="mb-6 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 relative z-10">
                 <label className="text-sm font-bold text-gray-900 dark:text-white mb-3 block">
                   📦 Encrypted Data (JSON)
                 </label>
@@ -388,7 +457,7 @@ export default function Encrypt() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 relative z-10">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -412,7 +481,7 @@ export default function Encrypt() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mt-6 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800"
+                  className="mt-6 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800 relative z-10"
                 >
                   <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center gap-2">
                     <QrCode className="w-5 h-5" />
@@ -434,7 +503,7 @@ export default function Encrypt() {
                   </div>
                 </motion.div>
               )}
-            </div>
+            </motion.div>
           </motion.section>
         )}
       </AnimatePresence>

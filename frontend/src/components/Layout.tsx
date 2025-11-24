@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Shield, Sparkles, Menu, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useState } from 'react'
 
 interface LayoutProps {
@@ -10,6 +10,13 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { scrollY } = useScroll()
+  
+  // Transform scroll position to scale and opacity - MORE DRAMATIC
+  const headerScale = useTransform(scrollY, [0, 200], [1, 0.7])
+  const headerY = useTransform(scrollY, [0, 300], [0, -150])
+  const headerOpacity = useTransform(scrollY, [0, 200], [1, 0])
+  const headerBlur = useTransform(scrollY, [0, 200], [0, 10])
 
   const isActive = (path: string) => location.pathname === path
 
@@ -17,12 +24,18 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Futuristic Floating Header */}
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="fixed top-0 left-0 right-0 z-40 px-4 md:px-6 py-4"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        style={{ 
+          scale: headerScale,
+          y: headerY,
+          opacity: headerOpacity,
+          filter: useTransform(headerBlur, (v) => `blur(${v}px)`)
+        }}
+        className="relative z-10 px-4 md:px-6 py-4"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl rounded-2xl border border-white/20 dark:border-gray-800 shadow-xl px-4 md:px-6 py-3">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl rounded-2xl border border-white/20 dark:border-gray-800 shadow-xl px-4 md:px-6 py-3 transition-all duration-300">
             <div className="flex justify-between items-center">
               {/* Logo */}
               <Link to="/" className="flex items-center gap-2 md:gap-3 group" onClick={() => setMobileMenuOpen(false)}>
@@ -196,7 +209,7 @@ export default function Layout({ children }: LayoutProps) {
       </AnimatePresence>
 
       {/* Main Content - Full Width */}
-      <main className="pt-24">
+      <main>
         {children}
       </main>
 
