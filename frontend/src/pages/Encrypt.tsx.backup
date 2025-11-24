@@ -1,0 +1,314 @@
+import { useState } from 'react'
+import { Lock, FileText, Copy, QrCode, Check, AlertCircle } from 'lucide-react'
+import { encryptionApi, qrApi, type EncryptedData } from '@/lib/api'
+import { checkPasswordStrength, copyToClipboard } from '@/lib/utils'
+import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator'
+
+export default function Encrypt() {
+  const [mode, setMode] = useState<'text' | 'file'>('text')
+  const [plaintext, setPlaintext] = useState('')
+  const [password, setPassword] = useState('')
+  const [useEmoji, setUseEmoji] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<{
+    encrypted_data: EncryptedData
+    emoji?: string
+    emoji_stats?: {
+      length: number
+      unique_emojis: number
+      emoji_count: number
+    }
+    qr_image?: string
+    qr_url?: string
+  } | null>(null)
+  const [error, setError] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  const passwordStrength = checkPasswordStrength(password)
+
+  const handleEncryptText = async () => {
+    if (!plaintext || !password) {
+      setError('Please enter text and password')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    try {
+      const data = await encryptionApi.encryptText(plaintext, password, useEmoji)
+      setResult(data)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Encryption failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEncryptFile = async () => {
+    if (!file || !password) {
+      setError('Please select a file and enter password')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    try {
+      const data = await encryptionApi.encryptFile(file, password)
+      setResult(data)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'File encryption failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGenerateQR = async () => {
+    if (!result?.encrypted_data) return
+
+    setLoading(true)
+    try {
+      const qrData = await qrApi.createToken(result.encrypted_data, 24)
+      setResult({ ...result, qr_image: qrData.qr_image, qr_url: qrData.url })
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'QR generation failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleCopy = async (text: string) => {
+    await copyToClipboard(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const downloadEncryptedData = () => {
+    if (!result) return
+    const dataStr = JSON.stringify(result.encrypted_data, null, 2)
+    const blob = new Blob([dataStr], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'encrypted_data.json'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="card">
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="p-2 bg-primary-100 rounded-lg">
+            <Lock className="w-6 h-6 text-primary-600" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Encrypt Message</h1>
+            <p className="text-sm text-gray-600">Secure your text or files with AES-256-GCM</p>
+          </div>
+        </div>
+
+        {/* Mode Selector */}
+        <div className="flex space-x-2 mb-6">
+          <button
+            onClick={() => { setMode('text'); setResult(null) }}
+            className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${
+              mode === 'text'
+                ? 'bg-primary-600 text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Text Message
+          </button>
+          <button
+            onClick={() => { setMode('file'); setResult(null) }}
+            className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${
+              mode === 'file'
+                ? 'bg-primary-600 text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <FileText className="w-4 h-4 inline mr-2" />
+            File
+          </button>
+        </div>
+
+        {/* Text Mode */}
+        {mode === 'text' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Message to Encrypt
+              </label>
+              <textarea
+                value={plaintext}
+                onChange={(e) => setPlaintext(e.target.value)}
+                className="input-field min-h-[120px] resize-y"
+                placeholder="Enter your secret message..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Encryption Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Enter a strong password"
+              />
+              {password && <PasswordStrengthIndicator strength={passwordStrength} />}
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="emoji"
+                checked={useEmoji}
+                onChange={(e) => setUseEmoji(e.target.checked)}
+                className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+              />
+              <label htmlFor="emoji" className="text-sm text-gray-700">
+                Convert to Emoji Format 😀
+              </label>
+            </div>
+
+            <button
+              onClick={handleEncryptText}
+              disabled={loading || !plaintext || !password}
+              className="btn-primary w-full"
+            >
+              {loading ? 'Encrypting...' : 'Encrypt Message'}
+            </button>
+          </div>
+        )}
+
+        {/* File Mode */}
+        {mode === 'file' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Select File
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                accept=".txt,.pdf,.png,.jpg,.jpeg"
+                className="input-field"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Allowed: TXT, PDF, PNG, JPG (Max 10MB)
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Encryption Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Enter a strong password"
+              />
+              {password && <PasswordStrengthIndicator strength={passwordStrength} />}
+            </div>
+
+            <button
+              onClick={handleEncryptFile}
+              disabled={loading || !file || !password}
+              className="btn-primary w-full"
+            >
+              {loading ? 'Encrypting...' : 'Encrypt File'}
+            </button>
+          </div>
+        )}
+
+        {/* Error Alert */}
+        {error && (
+          <div className="alert-error mt-4 flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Results */}
+      {result && (
+        <div className="card animate-slide-up">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">✅ Encryption Successful</h2>
+
+          {result.emoji && (
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-medium text-gray-700">Emoji Ciphertext</label>
+                <button
+                  onClick={() => handleCopy(result.emoji!)}
+                  className="text-sm text-primary-600 hover:text-primary-700 flex items-center space-x-1"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  <span>{copied ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-40 overflow-y-auto" style={{ lineBreak: 'anywhere', wordBreak: 'keep-all' }}>
+                {result.emoji}
+              </div>
+              {result.emoji_stats && (
+                <p className="text-xs text-gray-600 mt-2">
+                  📊 Length: {result.emoji_stats.length} chars | Emojis: {result.emoji_stats.emoji_count} | Unique: {result.emoji_stats.unique_emojis}
+                </p>
+              )}
+              <p className="text-xs text-blue-600 mt-1">
+                🎨 Features diverse emojis: animals 🐶, food 🍎, nature ⭐, and more - no separators!
+              </p>
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Encrypted Data (JSON)
+            </label>
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+              <pre className="text-xs text-gray-700">
+                {JSON.stringify(result.encrypted_data, null, 2)}
+              </pre>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button onClick={downloadEncryptedData} className="btn-secondary">
+              Download JSON
+            </button>
+            <button onClick={handleGenerateQR} className="btn-primary flex items-center space-x-2">
+              <QrCode className="w-4 h-4" />
+              <span>Generate QR Token</span>
+            </button>
+          </div>
+
+          {result.qr_image && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-3">🔗 Single-Use QR Token</h3>
+              <div className="flex flex-col items-center space-y-3">
+                <img
+                  src={`data:image/png;base64,${result.qr_image}`}
+                  alt="QR Code"
+                  className="w-48 h-48 border-4 border-white shadow-lg rounded-lg"
+                />
+                <div className="text-center">
+                  <p className="text-sm text-blue-800 mb-2">Share this QR code or URL:</p>
+                  <code className="text-xs bg-white px-3 py-2 rounded border border-blue-200 block">
+                    {result.qr_url}
+                  </code>
+                  <p className="text-xs text-blue-600 mt-2">⚠️ Can only be viewed once!</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

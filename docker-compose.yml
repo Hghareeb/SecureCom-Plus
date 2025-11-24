@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: securecom-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://securecom:securecom@db:5432/securecom
+      - ENVIRONMENT=production
+      - DEBUG=False
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: securecom-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: securecom-db
+    environment:
+      - POSTGRES_USER=securecom
+      - POSTGRES_PASSWORD=securecom
+      - POSTGRES_DB=securecom
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
