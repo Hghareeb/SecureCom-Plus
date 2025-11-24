@@ -15,6 +15,7 @@ command = "npm run build"
 
 [build.environment]
 NODE_VERSION = "18"
+VITE_API_URL = "https://securecom-backend-t494.onrender.com"
 
 [build.processing]
 
