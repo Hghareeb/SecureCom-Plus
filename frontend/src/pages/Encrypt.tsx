@@ -209,12 +209,27 @@ export default function Encrypt() {
                   onClick={handleEncryptText}
                   disabled={loading || !plaintext || !password}
                   whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  whileTap={{ scale: 0.95 }}
+                  animate={loading ? { scale: [1, 1.02, 1] } : {}}
+                  transition={loading ? { duration: 1, repeat: Infinity } : {}}
+                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 relative overflow-hidden"
                 >
+                  {loading && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      initial={{ x: '-100%' }}
+                      animate={{ x: '200%' }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                  )}
                   {loading ? (
                     <>
-                      <Zap className="w-5 h-5 animate-spin" />
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Zap className="w-5 h-5" />
+                      </motion.div>
                       Encrypting...
                     </>
                   ) : (
@@ -266,12 +281,27 @@ export default function Encrypt() {
                   onClick={handleEncryptFile}
                   disabled={loading || !file || !password}
                   whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  whileTap={{ scale: 0.95 }}
+                  animate={loading ? { scale: [1, 1.02, 1] } : {}}
+                  transition={loading ? { duration: 1, repeat: Infinity } : {}}
+                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 relative overflow-hidden"
                 >
+                  {loading && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      initial={{ x: '-100%' }}
+                      animate={{ x: '200%' }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                  )}
                   {loading ? (
                     <>
-                      <Zap className="w-5 h-5 animate-spin" />
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <Zap className="w-5 h-5" />
+                      </motion.div>
                       Encrypting...
                     </>
                   ) : (
