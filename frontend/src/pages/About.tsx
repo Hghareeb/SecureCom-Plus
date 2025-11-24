@@ -6,14 +6,14 @@ export default function About() {
     <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Hero Section */}
       <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-orange-500/10 to-yellow-500/10 dark:from-red-900/20 dark:via-orange-900/20 dark:to-yellow-900/20"></div>
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-6xl font-black mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-6xl font-black mb-6 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
               About SecureCom+
             </h1>
             <p className="text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
@@ -43,7 +43,7 @@ export default function About() {
               while maintaining user-friendly interfaces and educational transparency.
             </p>
             <div className="flex items-center gap-4 mt-6">
-              <Award className="w-12 h-12 text-purple-600" />
+              <Award className="w-12 h-12 text-orange-600" />
               <div>
                 <p className="font-bold text-gray-900 dark:text-white">Academic Project</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">FutureGate Bank Initiative</p>
@@ -97,21 +97,21 @@ export default function About() {
                 icon: FileText,
                 title: "Input Data",
                 desc: "Enter your message or upload a file (TXT, PDF, PNG, JPG)",
-                color: "from-blue-500 to-cyan-500"
+                color: "from-red-500 to-orange-500"
               },
               {
                 step: 2,
                 icon: Lock,
                 title: "Create Password",
                 desc: "Choose a strong password with real-time strength analysis",
-                color: "from-purple-500 to-pink-500"
+                color: "from-orange-500 to-yellow-500"
               },
               {
                 step: 3,
                 icon: Zap,
                 title: "Encrypt",
                 desc: "AES-256-GCM encrypts your data with Argon2 key derivation",
-                color: "from-green-500 to-emerald-500"
+                color: "from-yellow-500 to-amber-500"
               },
               {
                 step: 4,
@@ -133,7 +133,7 @@ export default function About() {
                   <div className={`inline-flex w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} items-center justify-center mb-4 shadow-lg`}>
                     <item.icon className="w-8 h-8 text-white" />
                   </div>
-                  <div className="absolute top-0 right-0 -mt-2 -mr-2 w-8 h-8 bg-white dark:bg-gray-900 rounded-full flex items-center justify-center border-2 border-purple-600 font-bold text-purple-600">
+                  <div className="absolute top-0 right-0 -mt-2 -mr-2 w-8 h-8 bg-white dark:bg-gray-900 rounded-full flex items-center justify-center border-2 border-orange-600 font-bold text-orange-600">
                     {item.step}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
@@ -205,11 +205,11 @@ export default function About() {
               whileHover={{ y: -10 }}
               className="p-8 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-800 shadow-xl"
             >
-              <div className="inline-block p-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl mb-4">
+              <div className="inline-block p-4 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl mb-4">
                 <standard.icon className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{standard.title}</h3>
-              <p className="text-sm text-purple-600 dark:text-purple-400 font-semibold mb-4">{standard.standard}</p>
+              <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mb-4">{standard.standard}</p>
               <p className="text-gray-600 dark:text-gray-400 mb-6">{standard.desc}</p>
               <ul className="space-y-2">
                 {standard.features.map((feature, j) => (
@@ -225,7 +225,7 @@ export default function About() {
       </section>
 
       {/* Privacy & Compliance */}
-      <section className="py-20 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-blue-500/5 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20">
+      <section className="py-20 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-yellow-500/5 dark:from-red-900/20 dark:via-orange-900/20 dark:to-yellow-900/20">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -233,7 +233,7 @@ export default function About() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <Shield className="w-16 h-16 mx-auto mb-6 text-purple-600" />
+            <Shield className="w-16 h-16 mx-auto mb-6 text-orange-600" />
             <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6">Privacy & Compliance</h2>
             
             <div className="space-y-6 text-left">

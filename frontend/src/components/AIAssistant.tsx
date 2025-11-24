@@ -37,7 +37,7 @@ export default function AIAssistant() {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-2xl"
+        className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-full shadow-2xl"
         whileHover={{ scale: 1.1, rotate: 10 }}
         whileTap={{ scale: 0.9 }}
       >
@@ -52,10 +52,10 @@ export default function AIAssistant() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 z-50 w-96 h-[500px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-200 dark:border-purple-800 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-50 w-96 h-[500px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-orange-200 dark:border-orange-800 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white flex items-center gap-3">
+            <div className="p-4 bg-gradient-to-r from-red-600 to-orange-600 text-white flex items-center gap-3">
               <Sparkles className="w-5 h-5" />
               <div>
                 <h3 className="font-bold">AI Assistant</h3>
@@ -74,7 +74,7 @@ export default function AIAssistant() {
                 >
                   <div className={`max-w-[80%] p-3 rounded-2xl ${
                     msg.role === 'user'
-                      ? 'bg-purple-600 text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
                   }`}>
                     {msg.text}
@@ -92,13 +92,13 @@ export default function AIAssistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask me anything..."
-                  className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-purple-500 text-gray-900 dark:text-white"
+                  className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-none focus:ring-2 focus:ring-orange-500 text-gray-900 dark:text-white"
                 />
                 <motion.button
                   onClick={handleSend}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full"
+                  className="p-2 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-full"
                 >
                   <Send className="w-5 h-5" />
                 </motion.button>

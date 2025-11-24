@@ -16,6 +16,7 @@ from app.schemas.qr_token import (
     CreateQRTokenRequest, CreateQRTokenResponse,
     ViewQRTokenResponse, QRTokenStatus
 )
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -50,8 +51,7 @@ async def create_qr_token(
         
         # Generate QR code URL - point to frontend, not API
         # Frontend will handle the nice UI for decryption
-        frontend_url = "http://localhost:5173"
-        qr_url = f"{frontend_url}/qr/{token}"
+        qr_url = f"{settings.FRONTEND_URL}/qr/{token}"
         
         # Generate QR code image
         qr = qrcode.QRCode(

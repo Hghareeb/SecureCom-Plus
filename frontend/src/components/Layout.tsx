@@ -29,12 +29,12 @@ export default function Layout({ children }: LayoutProps) {
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
-                  className="p-1.5 md:p-2 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg"
+                  className="p-1.5 md:p-2 bg-gradient-to-br from-red-600 to-orange-600 rounded-xl shadow-lg"
                 >
                   <Shield className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </motion.div>
                 <div>
-                  <h1 className="text-lg md:text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <h1 className="text-lg md:text-xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                     SecureCom+
                   </h1>
                   <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Encryption Toolkit</p>
@@ -49,7 +49,7 @@ export default function Layout({ children }: LayoutProps) {
                     whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                       isActive('/')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -62,7 +62,7 @@ export default function Layout({ children }: LayoutProps) {
                     whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                       isActive('/encrypt')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -75,7 +75,7 @@ export default function Layout({ children }: LayoutProps) {
                     whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                       isActive('/decrypt')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -88,7 +88,7 @@ export default function Layout({ children }: LayoutProps) {
                     whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                       isActive('/about')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -101,7 +101,7 @@ export default function Layout({ children }: LayoutProps) {
                     whileTap={{ scale: 0.95 }}
                     className={`px-4 py-2 rounded-xl font-medium transition-all ${
                       isActive('/faq-help')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -138,7 +138,7 @@ export default function Layout({ children }: LayoutProps) {
                   <div
                     className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
                       isActive('/')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -149,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
                   <div
                     className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
                       isActive('/encrypt')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -160,7 +160,7 @@ export default function Layout({ children }: LayoutProps) {
                   <div
                     className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
                       isActive('/decrypt')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -171,7 +171,7 @@ export default function Layout({ children }: LayoutProps) {
                   <div
                     className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
                       isActive('/about')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -182,7 +182,7 @@ export default function Layout({ children }: LayoutProps) {
                   <div
                     className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
                       isActive('/faq-help')
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -201,11 +201,11 @@ export default function Layout({ children }: LayoutProps) {
       </main>
 
       {/* Futuristic Footer */}
-      <footer className="relative mt-20 py-12 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-blue-500/5 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-blue-900/20 border-t border-gray-200 dark:border-gray-800">
+      <footer className="relative mt-20 py-12 bg-gradient-to-br from-red-500/5 via-orange-500/5 to-yellow-500/5 dark:from-red-900/20 dark:via-orange-900/20 dark:to-yellow-900/20 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg">
+              <div className="p-2 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>

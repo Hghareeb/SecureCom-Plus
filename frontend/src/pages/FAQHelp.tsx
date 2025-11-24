@@ -41,19 +41,19 @@ export default function FAQHelp() {
       icon: Shield,
       title: "Privacy & Security",
       question: "Is my data secure?",
-      color: "from-blue-500 to-cyan-500"
+      color: "from-red-500 to-orange-500"
     },
     {
       icon: Key,
       title: "Passwords",
       question: "What if I lose my password?",
-      color: "from-purple-500 to-pink-500"
+      color: "from-orange-500 to-yellow-500"
     },
     {
       icon: Lock,
       title: "Encryption",
       question: "How does AES-256 work?",
-      color: "from-green-500 to-emerald-500"
+      color: "from-yellow-500 to-amber-500"
     },
     {
       icon: Zap,
@@ -65,13 +65,13 @@ export default function FAQHelp() {
       icon: AlertTriangle,
       title: "Troubleshooting",
       question: "Why won't it decrypt?",
-      color: "from-red-500 to-pink-500"
+      color: "from-red-600 to-orange-600"
     },
     {
       icon: FileText,
       title: "File Encryption",
       question: "How to encrypt files?",
-      color: "from-indigo-500 to-purple-500"
+      color: "from-orange-600 to-red-600"
     }
   ]
 
@@ -84,8 +84,8 @@ export default function FAQHelp() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <HelpCircle className="w-12 h-12 mx-auto mb-4 text-purple-600" />
-          <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <HelpCircle className="w-12 h-12 mx-auto mb-4 text-orange-600" />
+          <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
             FAQ & Help Center
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
@@ -103,7 +103,7 @@ export default function FAQHelp() {
           className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-2xl rounded-3xl border border-white/20 dark:border-gray-800 shadow-2xl overflow-hidden"
         >
           {/* Chat Header */}
-          <div className="p-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white flex items-center gap-4">
+          <div className="p-6 bg-gradient-to-r from-red-600 to-orange-600 text-white flex items-center gap-4">
             <div className="p-3 bg-white/20 backdrop-blur-xl rounded-xl">
               <HelpCircle className="w-8 h-8" />
             </div>
@@ -128,7 +128,7 @@ export default function FAQHelp() {
               >
                 <div className={`max-w-[80%] p-4 rounded-2xl ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                    ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white'
                     : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700'
                 }`}>
                   <p className="text-sm leading-relaxed">{msg.text}</p>
@@ -146,13 +146,13 @@ export default function FAQHelp() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Ask about encryption, features, troubleshooting..."
-                className="flex-1 px-5 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-purple-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="flex-1 px-5 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-orange-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <motion.button
                 onClick={() => handleSend()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold shadow-lg"
               >
                 Send
               </motion.button>
@@ -198,7 +198,7 @@ export default function FAQHelp() {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="p-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl text-white shadow-2xl text-center"
+          className="p-8 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl text-white shadow-2xl text-center"
         >
           <BookOpen className="w-12 h-12 mx-auto mb-4" />
           <h3 className="text-2xl font-black mb-3">Need More Help?</h3>
@@ -219,7 +219,7 @@ export default function FAQHelp() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold hover:shadow-xl transition-shadow"
+                className="px-6 py-3 bg-white text-orange-600 rounded-xl font-semibold hover:shadow-xl transition-shadow"
               >
                 Try Encryption
               </motion.button>

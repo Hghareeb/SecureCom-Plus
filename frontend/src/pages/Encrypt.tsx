@@ -105,13 +105,13 @@ export default function Encrypt() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="inline-flex p-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-xl mb-4">
+          <div className="inline-flex p-4 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl shadow-xl mb-4">
             <Lock className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-black mb-3 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
             Encrypt Message
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-orange-600 dark:text-orange-400">
             Secure your data with military-grade AES-256-GCM encryption
           </p>
         </motion.div>
@@ -126,7 +126,7 @@ export default function Encrypt() {
             onClick={() => { setMode('text'); setResult(null) }}
             className={`flex-1 p-6 rounded-2xl font-bold text-lg transition-all ${
               mode === 'text'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-2xl'
+                ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-2xl'
                 : 'bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
             }`}
           >
@@ -139,7 +139,7 @@ export default function Encrypt() {
             onClick={() => { setMode('file'); setResult(null) }}
             className={`flex-1 p-6 rounded-2xl font-bold text-lg transition-all ${
               mode === 'file'
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-2xl'
+                ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-2xl'
                 : 'bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
             }`}
           >
@@ -173,7 +173,7 @@ export default function Encrypt() {
                   <textarea
                     value={plaintext}
                     onChange={(e) => setPlaintext(e.target.value)}
-                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-purple-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 min-h-[150px] resize-y"
+                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-orange-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 min-h-[150px] resize-y"
                     placeholder="Enter your secret message..."
                   />
                 </div>
@@ -186,19 +186,19 @@ export default function Encrypt() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-purple-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-orange-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                     placeholder="Enter a strong password"
                   />
                   {password && <PasswordStrengthIndicator strength={passwordStrength} />}
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                <div className="flex items-center gap-3 p-4 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-xl">
                   <input
                     type="checkbox"
                     id="emoji"
                     checked={useEmoji}
                     onChange={(e) => setUseEmoji(e.target.checked)}
-                    className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                    className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
                   />
                   <label htmlFor="emoji" className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
                     Convert to Emoji Format 😀 (Fun & Shareable!)
@@ -210,7 +210,7 @@ export default function Encrypt() {
                   disabled={loading || !plaintext || !password}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>
@@ -241,7 +241,7 @@ export default function Encrypt() {
                     type="file"
                     onChange={(e) => setFile(e.target.files?.[0] || null)}
                     accept=".txt,.pdf,.png,.jpg,.jpeg"
-                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-purple-500 text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700"
+                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-orange-500 text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                     Allowed: TXT, PDF, PNG, JPG (Max 10MB)
@@ -256,7 +256,7 @@ export default function Encrypt() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-purple-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    className="w-full px-5 py-4 rounded-2xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-orange-500 focus:ring-0 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                     placeholder="Enter a strong password"
                   />
                   {password && <PasswordStrengthIndicator strength={passwordStrength} />}
@@ -267,7 +267,7 @@ export default function Encrypt() {
                   disabled={loading || !file || !password}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-lg shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                 >
                   {loading ? (
                     <>
@@ -292,7 +292,7 @@ export default function Encrypt() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-800 dark:text-red-200"
+                className="mt-6 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl flex items-center gap-3 text-red-800 dark:text-red-200"
               >
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">{error}</span>
@@ -311,14 +311,14 @@ export default function Encrypt() {
             exit={{ opacity: 0, y: 30 }}
             className="max-w-3xl mx-auto px-6"
           >
-            <div className="p-8 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-3xl shadow-xl">
+            <div className="p-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-800 rounded-3xl shadow-xl">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-green-500 rounded-xl">
+                <div className="p-3 bg-red-500 rounded-xl">
                   <Check className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-gray-900 dark:text-white">Encryption Successful!</h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Your data is now secure</p>
+                  <p className="text-sm text-orange-600 dark:text-orange-400">Your data is now secure</p>
                 </div>
               </div>
 
@@ -330,7 +330,7 @@ export default function Encrypt() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleCopy(result.emoji!)}
-                      className="px-4 py-2 bg-purple-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 shadow-lg"
+                      className="px-4 py-2 bg-orange-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 shadow-lg"
                     >
                       {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                       {copied ? 'Copied!' : 'Copy'}
@@ -340,7 +340,7 @@ export default function Encrypt() {
                     {result.emoji}
                   </div>
                   {result.emoji_stats && (
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-3">
+                    <p className="text-xs text-orange-600 dark:text-orange-400 mt-3">
                       📊 {result.emoji_stats.length} chars • {result.emoji_stats.emoji_count} emojis • {result.emoji_stats.unique_emojis} unique
                     </p>
                   )}
@@ -363,7 +363,7 @@ export default function Encrypt() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={downloadEncryptedData}
-                  className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold border border-gray-200 dark:border-gray-700 shadow-lg"
+                  className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold border border-orange-300 dark:border-orange-700 shadow-lg"
                 >
                   Download JSON
                 </motion.button>
@@ -371,7 +371,7 @@ export default function Encrypt() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleGenerateQR}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold shadow-lg flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl font-bold shadow-lg flex items-center gap-2"
                 >
                   <QrCode className="w-5 h-5" />
                   Generate QR Token
@@ -382,9 +382,9 @@ export default function Encrypt() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="mt-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800"
+                  className="mt-6 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800"
                 >
-                  <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-4 flex items-center gap-2">
+                  <h3 className="font-bold text-orange-900 dark:text-orange-100 mb-4 flex items-center gap-2">
                     <QrCode className="w-5 h-5" />
                     Single-Use QR Token
                   </h3>
@@ -395,11 +395,11 @@ export default function Encrypt() {
                       className="w-48 h-48 border-4 border-white dark:border-gray-800 shadow-xl rounded-2xl"
                     />
                     <div className="text-center w-full">
-                      <p className="text-sm text-blue-800 dark:text-blue-200 mb-2 font-medium">Share this URL:</p>
-                      <code className="text-xs bg-white dark:bg-gray-900 px-4 py-3 rounded-xl border border-blue-200 dark:border-blue-800 block break-all">
+                      <p className="text-sm text-orange-800 dark:text-orange-200 mb-2 font-medium">Share this URL:</p>
+                      <code className="text-xs bg-white dark:bg-gray-900 px-4 py-3 rounded-xl border border-orange-200 dark:border-orange-800 block break-all">
                         {result.qr_url}
                       </code>
-                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-3 font-medium">⚠️ Can only be viewed once!</p>
+                      <p className="text-sm text-orange-600 dark:text-orange-400 hover:text-orange-700 font-medium">⚠️ Can only be viewed once!</p>
                     </div>
                   </div>
                 </motion.div>

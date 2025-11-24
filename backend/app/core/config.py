@@ -43,6 +43,9 @@ class Settings(BaseSettings):
     # QR Token
     QR_TOKEN_EXPIRY_HOURS: int = 24
     
+    # Frontend URL (for QR codes)
+    FRONTEND_URL: str = "http://localhost:5173"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

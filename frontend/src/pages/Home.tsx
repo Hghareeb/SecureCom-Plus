@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Lock, Unlock, Shield, Zap, ArrowRight, Sparkles, Star, Moon, Sun } from 'lucide-react'
+import { Lock, Unlock, Shield, Zap, ArrowRight, Sparkles, Star } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { TypeAnimation } from 'react-type-animation'
 import { useState, useEffect, useRef } from 'react'
@@ -7,7 +7,7 @@ import { useThemeStore } from '../store/themeStore'
 import AIAssistant from '../components/AIAssistant'
 
 export default function Home() {
-  const { isDark, toggleTheme } = useThemeStore()
+  const { isDark } = useThemeStore()
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll()
@@ -31,27 +31,17 @@ export default function Home() {
       {/* AI Assistant */}
       <AIAssistant />
 
-      {/* Theme Toggle */}
-      <motion.button
-        onClick={toggleTheme}
-        className="fixed top-20 right-4 md:top-6 md:right-6 z-50 p-2 md:p-3 bg-white/10 dark:bg-gray-900/50 backdrop-blur-xl rounded-full border border-purple-200 dark:border-purple-800 shadow-xl"
-        whileHover={{ scale: 1.1, rotate: 180 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        {isDark ? <Sun className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" /> : <Moon className="w-4 h-4 md:w-5 md:h-5 text-purple-600" />}
-      </motion.button>
-
       {/* Animated Background - Parallax */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
         {/* Gradient Mesh */}
         <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-blue-900/30"
+          className="absolute inset-0 bg-gradient-to-br from-red-500/20 via-orange-500/20 to-yellow-500/20 dark:from-red-900/30 dark:via-orange-900/30 dark:to-yellow-900/30"
           style={{ y: backgroundY }}
         />
         
         {/* Cursor Glow */}
         <div 
-          className="absolute w-[600px] h-[600px] bg-purple-500/30 dark:bg-purple-500/20 rounded-full blur-3xl"
+          className="absolute w-[600px] h-[600px] bg-orange-500/30 dark:bg-orange-500/20 rounded-full blur-3xl"
           style={{
             left: `${mousePosition.x - 300}px`,
             top: `${mousePosition.y - 300}px`,
@@ -75,7 +65,7 @@ export default function Home() {
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-2xl hidden sm:block"
+              className="absolute w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-red-500/20 to-orange-500/20 blur-2xl hidden sm:block"
               animate={{
                 x: [0, 100, 0],
                 y: [0, -100, 0],
@@ -100,8 +90,8 @@ export default function Home() {
             transition={{ duration: 1, type: "spring", bounce: 0.3 }}
             className="relative mb-8 md:mb-12"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-2xl md:blur-3xl opacity-50 animate-pulse"></div>
-            <div className="relative p-4 md:p-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl md:rounded-3xl shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500 rounded-full blur-2xl md:blur-3xl opacity-50 animate-pulse"></div>
+            <div className="relative p-4 md:p-8 bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl md:rounded-3xl shadow-2xl">
               <Shield className="w-16 h-16 md:w-24 md:h-24 text-white" />
             </div>
           </motion.div>
@@ -111,9 +101,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black mb-4 md:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black mb-4 md:mb-6 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 dark:from-red-400 dark:via-orange-400 dark:to-yellow-400 bg-clip-text text-transparent"
           >
-            SecureCom<span className="text-pink-500">+</span>
+            SecureCom<span className="text-orange-500">+</span>
           </motion.h1>
 
           {/* Typing Animation */}
@@ -149,15 +139,15 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-md sm:max-w-none px-4"
+            className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full max-w-md sm:max-w-none px-4 justify-center items-center"
           >
             <Link to="/encrypt" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(147, 51, 234, 0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                className="group w-full px-6 sm:px-10 py-4 md:py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold text-base md:text-lg shadow-2xl flex items-center justify-center gap-3 overflow-hidden relative"
+                className="group w-full px-6 sm:px-10 py-4 md:py-5 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-2xl font-bold text-base md:text-lg shadow-2xl flex items-center justify-center gap-3 overflow-hidden relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <Lock className="w-5 h-5 md:w-6 md:h-6 relative z-10" />
                 <span className="relative z-10">Start Encrypting</span>
                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
@@ -168,7 +158,7 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full px-6 sm:px-10 py-4 md:py-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-2 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 rounded-2xl font-bold text-base md:text-lg shadow-xl flex items-center justify-center gap-3"
+                className="w-full px-6 sm:px-10 py-4 md:py-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-2 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300 rounded-2xl font-bold text-base md:text-lg shadow-xl flex items-center justify-center gap-3"
               >
                 <Unlock className="w-5 h-5 md:w-6 md:h-6" />
                 <span>Decrypt</span>
@@ -176,15 +166,31 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {/* Scroll Indicator */}
+          {/* Scroll Indicator - Fire Chevrons */}
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1"
           >
-            <div className="w-6 h-10 border-2 border-purple-400 dark:border-purple-600 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-purple-400 dark:bg-purple-600 rounded-full mt-2"></div>
-            </div>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Scroll</span>
+            <motion.div
+              animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+            >
+              <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+              className="-mt-3"
+            >
+              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+              </svg>
+            </motion.div>
           </motion.div>
         </motion.section>
 
@@ -202,9 +208,9 @@ export default function Home() {
           </motion.div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {[
-            { icon: Lock, title: "AES-256-GCM", desc: "Military-grade encryption", color: "from-blue-500 to-cyan-500" },
-            { icon: Zap, title: "Lightning Fast", desc: "Instant encryption", color: "from-purple-500 to-pink-500" },
-            { icon: Shield, title: "Quantum-Safe", desc: "Future-proof security", color: "from-green-500 to-emerald-500" },
+            { icon: Lock, title: "AES-256-GCM", desc: "Military-grade encryption", color: "from-red-500 to-orange-500" },
+            { icon: Zap, title: "Lightning Fast", desc: "Instant encryption", color: "from-orange-500 to-yellow-500" },
+            { icon: Shield, title: "Quantum-Safe", desc: "Future-proof security", color: "from-yellow-500 to-amber-500" },
           ].map((feature, i) => (
             <motion.div
               key={i}
@@ -263,14 +269,14 @@ export default function Home() {
                   className={`flex flex-col ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-6 md:gap-12`}
                 >
                   <div className="flex-1 space-y-3 md:space-y-6 text-center md:text-left">
-                    <div className="text-5xl sm:text-6xl md:text-8xl font-black text-purple-200 dark:text-purple-900/50">{item.step}</div>
+                    <div className="text-5xl sm:text-6xl md:text-8xl font-black text-orange-200 dark:text-orange-900/50">{item.step}</div>
                     <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{item.title}</h3>
                     <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400">{item.desc}</p>
                   </div>
                   <div className="flex-1 flex justify-center">
-                    <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl md:rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 p-1">
+                    <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl md:rounded-3xl bg-gradient-to-br from-red-500 to-orange-500 p-1">
                       <div className="w-full h-full rounded-2xl md:rounded-3xl bg-white dark:bg-gray-900 flex items-center justify-center">
-                        <item.icon className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 text-purple-600 dark:text-purple-400" />
+                        <item.icon className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 text-orange-600 dark:text-orange-400" />
                       </div>
                     </div>
                   </div>
@@ -304,7 +310,7 @@ export default function Home() {
                   transition={{ delay: i * 0.1, duration: 0.6 }}
                   className="p-4 md:p-8 bg-white/40 dark:bg-gray-900/40 backdrop-blur-2xl rounded-2xl md:rounded-3xl border border-white/20 dark:border-gray-800"
                 >
-                  <div className="text-3xl sm:text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1 md:mb-2">
+                  <div className="text-3xl sm:text-4xl md:text-6xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-1 md:mb-2">
                     {stat.number}{stat.suffix}
                   </div>
                   <div className="text-xs sm:text-sm md:text-lg text-gray-600 dark:text-gray-400">{stat.label}</div>
@@ -322,7 +328,7 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="relative p-8 md:p-16 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-900 dark:to-pink-900 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden text-center"
+              className="relative p-8 md:p-16 bg-gradient-to-r from-red-600 to-orange-600 dark:from-red-900 dark:to-orange-900 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden text-center"
             >
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9InN0YXJzIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxjaXJjbGUgY3g9IjEiIGN5PSIxIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjc3RhcnMpIi8+PC9zdmc+')] opacity-30"></div>
             
@@ -335,7 +341,7 @@ export default function Home() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-8 sm:px-10 md:px-12 py-3 sm:py-4 md:py-5 bg-white text-purple-600 rounded-xl md:rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-shadow"
+                  className="px-8 sm:px-10 md:px-12 py-3 sm:py-4 md:py-5 bg-white text-orange-600 rounded-xl md:rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-shadow"
                 >
                   Get Started Now →
                 </motion.button>
