@@ -18,18 +18,16 @@ services:
         value: sqlite:///./securecom.db
 
   # Frontend
-  - type: web
+  - type: static
     name: securecom-frontend
-    env: node
+    env: static
     region: oregon
-    plan: free
     buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT
+    staticPublishPath: frontend/dist
     envVars:
       - key: NODE_VERSION
         value: 18.0.0
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: securecom-backend
-          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
