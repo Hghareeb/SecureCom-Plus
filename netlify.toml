@@ -2,7 +2,7 @@
   base = "frontend"
   command = "npm run build"
   publish = "dist"
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "18", VITE_API_URL = "https://securecom-backend-t494.onrender.com" }
 
 [[redirects]]
   from = "/*"
