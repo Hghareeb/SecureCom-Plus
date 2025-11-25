@@ -12,4 +12,4 @@ services:
       - key: DEBUG
         value: false
       - key: FRONTEND_URL
-        value: https://securecom-plus.netlify.app
+        value: https://securecom.netlify.app

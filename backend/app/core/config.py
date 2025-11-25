@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     QR_TOKEN_EXPIRY_HOURS: int = 24
     
     # Frontend URL (for QR codes)
-    FRONTEND_URL: str = "https://securecom-plus.netlify.app"
+    FRONTEND_URL: str = "https://securecom.netlify.app"
     
     class Config:
         env_file = ".env"
