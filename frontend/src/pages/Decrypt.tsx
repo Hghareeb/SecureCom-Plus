@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Unlock, AlertCircle, CheckCircle, Sparkles, FileText, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { encryptionApi, type EncryptedData } from '@/lib/api'
+import { encryptionApi, type EncryptedData } from '@/lib/api.ts'
 
 export default function Decrypt() {
   const [mode, setMode] = useState<'json' | 'emoji' | 'file'>('json')

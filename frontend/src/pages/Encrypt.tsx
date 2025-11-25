@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Lock, FileText, Copy, QrCode, Check, AlertCircle, Sparkles, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { encryptionApi, qrApi, type EncryptedData } from '@/lib/api'
-import { checkPasswordStrength, copyToClipboard } from '@/lib/utils'
+import { encryptionApi, qrApi, type EncryptedData } from '@/lib/api.ts'
+import { checkPasswordStrength, copyToClipboard } from '@/lib/utils.ts'
 import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator'
 
 export default function Encrypt() {

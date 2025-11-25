@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { QrCode, AlertCircle, CheckCircle, Unlock } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { qrApi, type EncryptedData } from '@/lib/api'
+import { qrApi, type EncryptedData } from '@/lib/api.ts'
 
 export default function QRView() {
   const { token } = useParams<{ token: string }>()

@@ -1,4 +1,4 @@
-import { type PasswordStrength } from '@/lib/utils'
+import { checkPasswordStrength, type PasswordStrength } from '@/lib/utils.ts'
 
 interface PasswordStrengthIndicatorProps {
   strength: PasswordStrength
