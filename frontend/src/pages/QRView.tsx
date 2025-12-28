@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { QrCode, AlertCircle, CheckCircle, Unlock } from 'lucide-react'
+import { QrCode, AlertCircle, CheckCircle, Unlock, Download } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { qrApi, type EncryptedData } from '@/lib/api'
+import { qrApi, encryptionApi, type EncryptedData } from '@/lib/api'
 
 export default function QRView() {
   const { token } = useParams<{ token: string }>()
@@ -11,7 +11,9 @@ export default function QRView() {
   const [encryptedMessage, setEncryptedMessage] = useState<EncryptedData | null>(null)
   const [password, setPassword] = useState('')
   const [plaintext, setPlaintext] = useState('')
+  const [decryptedFileData, setDecryptedFileData] = useState<{ filename: string, data: string, mimetype?: string } | null>(null)
   const [viewedAt, setViewedAt] = useState<Date | null>(null)
+  const [isFileEncryption, setIsFileEncryption] = useState(false)
 
   useEffect(() => {
     loadToken()
@@ -25,6 +27,8 @@ export default function QRView() {
       // Use status endpoint - doesn't consume the token yet
       const data = await qrApi.getTokenStatus(token)
       setEncryptedMessage(data.encrypted_message)
+      // Check if this is file encryption (has filename metadata)
+      setIsFileEncryption(!!data.encrypted_message.filename)
       // Don't set viewedAt yet since we haven't marked it as viewed
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to load token')
@@ -37,22 +41,19 @@ export default function QRView() {
     if (!encryptedMessage || !password) return
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-      const response = await fetch(`${apiUrl}/api/encryption/text/decrypt`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          password,
-          ...encryptedMessage,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Decryption failed')
+      if (isFileEncryption) {
+        // Decrypt file using file endpoint
+        const data = await encryptionApi.decryptFile(password, encryptedMessage)
+        setDecryptedFileData({
+          data: data.file_data,
+          filename: data.metadata?.filename || 'decrypted_file',
+          mimetype: data.metadata?.mimetype
+        })
+      } else {
+        // Decrypt text using text endpoint
+        const data = await encryptionApi.decryptText(password, encryptedMessage)
+        setPlaintext(data.plaintext)
       }
-
-      const data = await response.json()
-      setPlaintext(data.plaintext)
       
       // Mark token as viewed now that it's been successfully decrypted
       if (token) {
@@ -111,7 +112,7 @@ export default function QRView() {
     )
   }
 
-  if (!plaintext && encryptedMessage) {
+  if (!plaintext && !decryptedFileData && encryptedMessage) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-950 flex items-center justify-center px-6 py-20">
         <motion.div
@@ -142,7 +143,7 @@ export default function QRView() {
           >
             <p className="font-bold text-orange-900 dark:text-orange-100 mb-1">⚠️ One-Time View</p>
             <p className="text-sm text-orange-800 dark:text-orange-200">
-              This is a secure one-time message. Once you decrypt it, the link will be consumed and cannot be used again.
+              This is a secure one-time {isFileEncryption ? 'file' : 'message'}. Once you decrypt it, the link will be consumed and cannot be used again.
             </p>
           </motion.div>
 
@@ -205,28 +206,64 @@ export default function QRView() {
             <CheckCircle className="w-8 h-8 text-white" />
           </motion.div>
           <div>
-            <h1 className="text-3xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Message Decrypted</h1>
-            <p className="text-sm text-orange-700 dark:text-orange-300">Successfully unlocked secure message</p>
+            <h1 className="text-3xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">{decryptedFileData ? 'File' : 'Message'} Decrypted</h1>
+            <p className="text-sm text-orange-700 dark:text-orange-300">Successfully unlocked secure {decryptedFileData ? 'file' : 'message'}</p>
           </div>
         </div>
 
-        <div className="mb-6">
-          <label className="text-sm font-bold text-orange-900 dark:text-orange-100 mb-3 block">
-            📄 Decrypted Message
-          </label>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-orange-300 dark:border-orange-700 max-h-80 overflow-y-auto"
-          >
-            <pre className="whitespace-pre-wrap text-gray-900 dark:text-white">{plaintext}</pre>
-          </motion.div>
-        </div>
+        {decryptedFileData ? (
+          <div className="mb-6">
+            <label className="text-sm font-bold text-orange-900 dark:text-orange-100 mb-3 block">
+              📁 Decrypted File
+            </label>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-orange-300 dark:border-orange-700"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-gray-900 dark:text-white mb-1">{decryptedFileData.filename}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{decryptedFileData.mimetype || 'Unknown type'}</p>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const link = document.createElement('a')
+                    const mimetype = decryptedFileData.mimetype || 'application/octet-stream'
+                    link.href = `data:${mimetype};base64,${decryptedFileData.data}`
+                    link.download = decryptedFileData.filename
+                    link.click()
+                  }}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Download
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+        ) : (
+          <div className="mb-6">
+            <label className="text-sm font-bold text-orange-900 dark:text-orange-100 mb-3 block">
+              📄 Decrypted Message
+            </label>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="p-5 bg-white dark:bg-gray-900 rounded-2xl border border-orange-300 dark:border-orange-700 max-h-80 overflow-y-auto"
+            >
+              <pre className="whitespace-pre-wrap text-gray-900 dark:text-white">{plaintext}</pre>
+            </motion.div>
+          </div>
+        )}
 
         <div className="p-4 bg-white dark:bg-gray-900 rounded-xl border border-orange-200 dark:border-orange-800">
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            🔒 This message was encrypted with AES-256-GCM. {viewedAt && `Decrypted at ${viewedAt.toLocaleString()}.`} The link has been consumed and cannot be used again.
+            🔒 This {decryptedFileData ? 'file' : 'message'} was encrypted with AES-256-GCM. {viewedAt && `Decrypted at ${viewedAt.toLocaleString()}.`} The link has been consumed and cannot be used again.
           </p>
         </div>
       </motion.div>
