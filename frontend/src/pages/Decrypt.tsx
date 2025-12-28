@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Unlock, AlertCircle, CheckCircle, Sparkles, FileText, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { encryptionApi, type EncryptedData } from '@/lib/api'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 export default function Decrypt() {
   const [mode, setMode] = useState<'json' | 'emoji' | 'file'>('json')
@@ -11,9 +12,10 @@ export default function Decrypt() {
   const [encryptedFile, setEncryptedFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [plaintext, setPlaintext] = useState('')
-  const [decryptedFileData, setDecryptedFileData] = useState<{ filename: string, data: string } | null>(null)
+  const [decryptedFileData, setDecryptedFileData] = useState<{ filename: string, data: string, mimetype?: string } | null>(null)
   const [error, setError] = useState('')
   const resultRef = useRef<HTMLDivElement>(null)
+  const { playDecrypt, playSuccess, playError } = useSoundEffects()
 
   // Auto-scroll to results when decryption succeeds
   useEffect(() => {
@@ -46,13 +48,17 @@ export default function Decrypt() {
         reader.onload = async (e) => {
           try {
             const encryptedData = JSON.parse(e.target?.result as string)
+            playDecrypt()
             const data = await encryptionApi.decryptFile(password, encryptedData)
             setDecryptedFileData({
               data: data.file_data,
-              filename: data.metadata?.filename || 'decrypted_file'
+              filename: data.metadata?.filename || 'decrypted_file',
+              mimetype: data.metadata?.mimetype
             })
+            playSuccess()
           } catch (err: any) {
             setError(err.response?.data?.detail || 'File decryption failed')
+            playError()
           } finally {
             setLoading(false)
           }
@@ -83,10 +89,13 @@ export default function Decrypt() {
         }
       }
 
+      playDecrypt()
       const data = await encryptionApi.decryptText(password, encryptedData, emoji)
       setPlaintext(data.plaintext)
+      playSuccess()
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Decryption failed - wrong password or corrupted data')
+      playError()
     } finally {
       setLoading(false)
     }
@@ -436,7 +445,8 @@ export default function Decrypt() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   const link = document.createElement('a')
-                  link.href = `data:application/octet-stream;base64,${decryptedFileData.data}`
+                  const mimetype = decryptedFileData.mimetype || 'application/octet-stream'
+                  link.href = `data:${mimetype};base64,${decryptedFileData.data}`
                   link.download = decryptedFileData.filename
                   link.click()
                 }}

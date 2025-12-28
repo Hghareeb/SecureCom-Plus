@@ -46,6 +46,9 @@ class Settings(BaseSettings):
     # Frontend URL (for QR codes)
     FRONTEND_URL: str = "https://securecom.netlify.app"
     
+    # OpenAI API
+    OPENAI_API_KEY: str = ""  # Set in environment
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

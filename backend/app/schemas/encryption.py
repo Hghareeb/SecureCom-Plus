@@ -20,6 +20,9 @@ class EncryptedData(BaseModel):
     nonce: str
     tag: str
     kdf: str
+    filename: Optional[str] = None
+    mimetype: Optional[str] = None
+    size: Optional[int] = None
 
 
 class EncryptTextResponse(BaseModel):

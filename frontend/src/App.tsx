@@ -6,6 +6,7 @@ import Decrypt from './pages/Decrypt'
 import QRView from './pages/QRView'
 import About from './pages/About'
 import FAQHelp from './pages/FAQHelp'
+import AIAssistant from './pages/AIAssistant'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/encrypt" element={<Encrypt />} />
           <Route path="/decrypt" element={<Decrypt />} />
+          <Route path="/ai-assistant" element={<AIAssistant />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq-help" element={<FAQHelp />} />
           <Route path="/qr/:token" element={<QRView />} />

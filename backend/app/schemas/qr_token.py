@@ -4,12 +4,12 @@ Pydantic schemas for QR token endpoints
 
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Any
 
 
 class CreateQRTokenRequest(BaseModel):
     """Request schema for creating QR token"""
-    encrypted_message: Dict[str, str] = Field(..., description="Encrypted message data")
+    encrypted_message: Dict[str, Any] = Field(..., description="Encrypted message data")
     expiry_hours: int = Field(default=24, ge=1, le=168, description="Token expiry in hours (1-168)")
 
 
@@ -25,7 +25,7 @@ class CreateQRTokenResponse(BaseModel):
 class ViewQRTokenResponse(BaseModel):
     """Response schema for viewing QR token"""
     success: bool = True
-    encrypted_message: Dict[str, str]
+    encrypted_message: Dict[str, Any]
     viewed_at: datetime
 
 

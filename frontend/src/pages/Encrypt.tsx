@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { encryptionApi, qrApi, type EncryptedData } from '@/lib/api'
 import { checkPasswordStrength, copyToClipboard } from '@/lib/utils'
 import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator'
+import { useSoundEffects } from '@/hooks/useSoundEffects'
 
 export default function Encrypt() {
   const [mode, setMode] = useState<'text' | 'file'>('text')
@@ -28,6 +29,7 @@ export default function Encrypt() {
   const resultRef = useRef<HTMLDivElement>(null)
 
   const passwordStrength = checkPasswordStrength(password)
+  const { playEncrypt, playSuccess, playError } = useSoundEffects()
 
   // Auto-scroll to results when encryption succeeds
   useEffect(() => {
@@ -47,10 +49,13 @@ export default function Encrypt() {
     setLoading(true)
     setError('')
     try {
+      playEncrypt()
       const data = await encryptionApi.encryptText(plaintext, password, useEmoji)
       setResult(data)
+      playSuccess()
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Encryption failed')
+      playError()
     } finally {
       setLoading(false)
     }
@@ -65,10 +70,13 @@ export default function Encrypt() {
     setLoading(true)
     setError('')
     try {
+      playEncrypt()
       const data = await encryptionApi.encryptFile(file, password)
       setResult(data)
+      playSuccess()
     } catch (err: any) {
       setError(err.response?.data?.detail || 'File encryption failed')
+      playError()
     } finally {
       setLoading(false)
     }
@@ -101,7 +109,12 @@ export default function Encrypt() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'encrypted_data.json'
+    
+    // Use original filename if available (for file encryption), otherwise use generic name
+    const filename = result.encrypted_data.filename 
+      ? `${result.encrypted_data.filename}.encrypted.json`
+      : 'encrypted_data.json'
+    link.download = filename
     link.click()
     URL.revokeObjectURL(url)
   }

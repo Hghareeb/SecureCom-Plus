@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 import logging
 
 from app.core.config import settings
-from app.api.routes import encryption, qr_token, health
+from app.api.routes import encryption, qr_token, health, ai_assistant
 from app.db.database import engine, Base
 
 # Configure logging
@@ -58,6 +58,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(encryption.router, prefix="/api/encryption", tags=["Encryption"])
 app.include_router(qr_token.router, prefix="/api/qr", tags=["QR Tokens"])
+app.include_router(ai_assistant.router, prefix="/api/ai", tags=["AI Assistant"])
 
 
 @app.get("/")

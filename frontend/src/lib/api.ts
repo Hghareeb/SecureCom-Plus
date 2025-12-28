@@ -11,6 +11,9 @@ export const api = axios.create({
 
 // Types
 export interface EncryptedData {
+  filename?: string
+  mimetype?: string
+  size?: number
   ciphertext: string
   salt: string
   nonce: string

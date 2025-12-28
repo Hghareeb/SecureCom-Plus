@@ -95,6 +95,19 @@ export default function Layout({ children }: LayoutProps) {
                     Decrypt
                   </motion.div>
                 </Link>
+                <Link to="/ai-assistant">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 py-2 rounded-xl font-medium transition-all flex items-center gap-2 ${
+                      isActive('/ai-assistant')
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <span>✨ AI Assistant</span>
+                  </motion.div>
+                </Link>
                 <Link to="/about">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -178,6 +191,17 @@ export default function Layout({ children }: LayoutProps) {
                     }`}
                   >
                     Decrypt
+                  </div>
+                </Link>
+                <Link to="/ai-assistant" onClick={() => setMobileMenuOpen(false)}>
+                  <div
+                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                      isActive('/ai-assistant')
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    ✨ AI Assistant
                   </div>
                 </Link>
                 <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
