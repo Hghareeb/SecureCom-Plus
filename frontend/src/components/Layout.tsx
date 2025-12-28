@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Shield, Sparkles, Menu, X } from 'lucide-react'
+import { Shield, Sparkles, Menu, X, Bot } from 'lucide-react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useState } from 'react'
 
@@ -105,7 +105,8 @@ export default function Layout({ children }: LayoutProps) {
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
-                    <span>✨ AI Assistant</span>
+                    <Bot className="w-4 h-4" />
+                      AI Assistant
                   </motion.div>
                 </Link>
                 <Link to="/about">
@@ -156,16 +157,35 @@ export default function Layout({ children }: LayoutProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-24 left-4 right-4 z-30 md:hidden"
+            className="fixed inset-0 top-0 z-30 md:hidden bg-gray-950/95 backdrop-blur-xl"
           >
-            <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl rounded-2xl border border-white/20 dark:border-gray-800 shadow-2xl p-4">
-              <nav className="flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              {/* Mobile Menu Header */}
+              <div className="flex justify-between items-center px-4 py-4 border-b border-gray-800">
+                <Link to="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                  <div className="p-1.5 bg-gradient-to-br from-red-600 to-orange-600 rounded-xl">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
+                    SecureCom+
+                  </span>
+                </Link>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 text-gray-300 hover:text-white"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Mobile Menu Links */}
+              <nav className="flex flex-col gap-1 px-4 py-6">
                 <Link to="/" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center ${
                       isActive('/')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     Home
@@ -173,10 +193,10 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
                 <Link to="/encrypt" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center ${
                       isActive('/encrypt')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     Encrypt
@@ -184,10 +204,10 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
                 <Link to="/decrypt" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center ${
                       isActive('/decrypt')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     Decrypt
@@ -195,21 +215,22 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
                 <Link to="/ai-assistant" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center flex items-center justify-center gap-2 ${
                       isActive('/ai-assistant')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
-                    ✨ AI Assistant
+                    <Bot className="w-4 h-4" />
+                    AI Assistant
                   </div>
                 </Link>
                 <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center ${
                       isActive('/about')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     About
@@ -217,10 +238,10 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
                 <Link to="/faq-help" onClick={() => setMobileMenuOpen(false)}>
                   <div
-                    className={`px-4 py-3 rounded-xl font-medium transition-all text-center ${
+                    className={`px-4 py-4 rounded-xl font-medium transition-all text-center ${
                       isActive('/faq-help')
                         ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     FAQ & Help
