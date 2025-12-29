@@ -12,7 +12,7 @@ export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "👋 Hi! I'm your AI encryption assistant. I can help you encrypt messages naturally - just tell me what you want to encrypt!\n\nTry saying: \"Encrypt 'Hello World' with a QR code\""
+      content: "👋 Hi! I'm your SecureCom+ AI guide. I can help you understand encryption, answer security questions, and guide you to the right tools.\n\nAsk me anything about cryptography, or tell me what you need help with!"
     }
   ])
   const [input, setInput] = useState('')
@@ -258,7 +258,7 @@ export default function AIAssistant() {
                     handleSend()
                   }
                 }}
-                placeholder="Type your message... (e.g., 'Encrypt Hello with QR code')"
+                placeholder="Ask me anything about encryption, security, or how to use SecureCom+..."
                 className="flex-1 resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 min-h-[60px] max-h-[150px]"
                 rows={2}
               />
@@ -288,9 +288,9 @@ export default function AIAssistant() {
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Try these examples:</p>
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              "Encrypt 'Secret meeting at 5pm' with QR code",
-              "Encrypt my password with emoji mode",
-              "Create encrypted message that expires in 12 hours"
+              "How do I encrypt a message?",
+              "Is AES-256 encryption secure?",
+              "What's the difference between encryption and hashing?"
             ].map((example, i) => (
               <button
                 key={i}

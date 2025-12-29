@@ -3,18 +3,18 @@ AI Assistant API Routes
 Natural language encryption interface
 """
 
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any, List, Literal
 from sqlalchemy.orm import Session
 import openai
 import secrets
 import string
-import json
 import re
-import qrcode
+import json
 import io
 import base64
+import qrcode
 
 from app.core.config import settings
 from app.core.encryption import EncryptionEngine
@@ -28,15 +28,30 @@ router = APIRouter()
 openai.api_key = settings.OPENAI_API_KEY
 
 
+Role = Literal["user", "assistant"]
+
+class HistoryItem(BaseModel):
+    role: Role
+    content: str
+
 class ChatMessage(BaseModel):
     message: str
-    conversation_history: Optional[list] = []
-
+    conversation_history: List[HistoryItem] = Field(default_factory=list)
 
 class ChatResponse(BaseModel):
     response: str
     action: Optional[str] = None
     data: Optional[Dict[str, Any]] = None
+
+class Intent(BaseModel):
+    """Structured output for intent extraction"""
+    intent: Literal["encrypt", "decrypt", "explain", "other"]
+    plaintext: Optional[str] = None
+    emoji_ciphertext: Optional[str] = None
+    payload_json: Optional[Dict[str, Any]] = None
+    password: Optional[str] = None
+    needs_confirmation: bool = False
+    user_question: Optional[str] = None
 
 
 def generate_secure_password(length: int = 16) -> str:
@@ -44,6 +59,32 @@ def generate_secure_password(length: int = 16) -> str:
     characters = string.ascii_letters + string.digits + string.punctuation
     password = ''.join(secrets.choice(characters) for _ in range(length))
     return password
+
+
+def contains_secrets(text: str) -> bool:
+    """Detect if text contains passwords, ciphertext, or sensitive data"""
+    if re.search(r'(?i)\b(password|pass)\b\s*[:=]', text):
+        return True
+    if re.search(r"\{[\s\S]*?(ciphertext|salt|nonce|tag)[\s\S]*?\}", text, re.I):
+        return True
+    # Long emoji runs (likely encrypted emoji)
+    if re.search(r"[\U0001F300-\U0001FAFF]{12,}", text):
+        return True
+    return False
+
+
+def redact(text: str) -> str:
+    """Redact sensitive information before sending to AI"""
+    text = re.sub(r'(?i)(password|pass)\s*[:=]\s*["\']?([^\s"\']+)["\']?', r"\1: [REDACTED]", text)
+    text = re.sub(r"\{[\s\S]*?\}", "{[REDACTED_JSON]}", text)
+    text = re.sub(r"[\U0001F300-\U0001FAFF]{12,}", "[REDACTED_EMOJI]", text)
+    return text
+
+
+def safe_history(history: List[HistoryItem], max_items: int = 16) -> List[dict]:
+    """Convert history to safe format, prevent system injection"""
+    trimmed = history[-max_items:]
+    return [{"role": h.role, "content": h.content[:4000]} for h in trimmed]
 
 
 def parse_ai_response(ai_text: str) -> Dict[str, Any]:
@@ -154,229 +195,102 @@ async def ai_chat(chat_message: ChatMessage, db: Session = Depends(get_db)):
         messages = [
             {
                 "role": "system",
-                "content": """You are SecureCom+ AI Assistant. You help users encrypt and decrypt messages.
+                "content": """You are SecureCom+ AI Assistant, an intelligent cryptography guide and security expert.
 
-STRICT RULES:
-1. Keep responses under 20 words when possible
-2. NO markdown (no **, __, etc.)
-3. NO emojis in your text
-4. NEVER show passwords, QR codes, encrypted data, or any results
-5. NEVER say "Here is..." - the system shows results, not you
+YOUR ROLE
+You are a GUIDE ONLY - you do NOT perform encryption or decryption. Instead, you:
+- Help users understand how to use SecureCom+ encryption features
+- Answer questions about cryptography, security, and best practices
+- Guide users to the appropriate pages for encryption/decryption
+- Ask smart questions to understand what users need
+- Provide educational explanations about encryption technology
 
-YOUR WORKFLOW:
+CORE CAPABILITIES
+1. Answer security and cryptography questions intelligently
+2. Explain how AES-256-GCM and Argon2id work
+3. Guide users on which SecureCom+ feature to use
+4. Help troubleshoot encryption/decryption issues
+5. Provide best practices for secure communication
 
-Encryption:
-User: "Encrypt [message]"
-You: "Encrypting with emoji format."
-System: Auto-generates password, encrypts as emoji, shows results
+HOW TO GUIDE USERS
 
-Decryption:
-User: "Decrypt [emoji] password [pass]"
-You: "Decrypting now."
-System: Decrypts and shows plaintext
+When user wants to encrypt:
+- Ask what they want to encrypt (text, file, or both)
+- Explain they should use the "Encrypt" page in the navigation
+- Tell them the system will auto-generate a secure password
+- Mention output will be emoji format for easy sharing
 
-Questions:
-User: "What encryption?"
-You: "AES-256-GCM with Argon2id."
+When user wants to decrypt:
+- Ask if they have the encrypted emoji ciphertext and password
+- Guide them to the "Decrypt" page in the navigation
+- Explain they need to paste both the emoji ciphertext AND password
 
-IMPORTANT:
-- Always encrypt as EMOJI format (no JSON, no QR codes)
-- Always GENERATE password (never ask user for password on encrypt)
-- Never ask "what format?" or "generate password?" - just do it
-- For decrypt: user MUST provide password
+When user asks questions:
+- Provide intelligent, detailed answers about encryption
+- Explain AES-256-GCM encryption and Argon2id key derivation
+- Discuss security threats and how SecureCom+ protects against them
+- Be conversational and educational
 
-NEVER DO:
-- Show passwords, encrypted data, or QR codes yourself
-- Ask questions about format or password preferences
-- Use markdown or emojis in your text
+HARD RULES
+- NEVER perform encryption or decryption yourself
+- NEVER generate passwords, ciphertext, or fake examples
+- ALWAYS guide users to use the actual encryption/decryption pages
+- Ask clarifying questions to understand user needs
+- Be smart, helpful, and educational
 
-DO:
-- Say "Encrypting with emoji format" then let system handle it
-- Answer questions in under 10 words
+EXAMPLE INTERACTIONS
+
+User: "I want to encrypt a message"
+You: "I can help you with that! What would you like to encrypt - text, a file, or both? Once you let me know, I'll guide you to the right page and walk you through the process."
+
+User: "Just text"
+You: "Perfect! Head to the Encrypt page using the navigation menu. There you can:
+1. Enter your message
+2. The system will automatically generate a secure password
+3. You'll get emoji-formatted ciphertext you can easily share
+Would you like to know how the encryption works or do you have any questions?"
+
+User: "Is AES-256 secure?"
+You: "Absolutely! AES-256-GCM is military-grade encryption used by governments worldwide. Here's why it's secure:
+- 256-bit key = 2^256 possible combinations (practically unbreakable)
+- GCM mode provides authentication (detects tampering)
+- Combined with Argon2id key derivation (memory-hard, resists brute force)
+- Each encryption uses unique salt and nonce values
+It would take billions of years to break with current technology. Any other questions about the security?"
+
+REMEMBER: Be intelligent, ask questions, guide users to pages, explain concepts clearly. You are an expert assistant, not an executor.
 """
             }
         ]
         
-        # Add conversation history - keep ALL messages for better context
-        messages.extend(chat_message.conversation_history)
+        # Add safe conversation history (prevent injection, limit size)
+        safe_hist = safe_history(chat_message.conversation_history, max_items=16)
+        messages.extend(safe_hist)
         
-        # Add current message
-        messages.append({"role": "user", "content": user_message})
+        # Redact sensitive data before sending to AI
+        safe_user_message = redact(user_message) if contains_secrets(user_message) else user_message
+        messages.append({"role": "user", "content": safe_user_message})
 
+        # AI is GUIDE ONLY - no encryption/decryption execution
         ai_response = ""
         if settings.OPENAI_API_KEY:
-            # Call OpenAI with upgraded model
+            # Call OpenAI with intelligent conversational model
             response = openai.chat.completions.create(
-                model="gpt-4o",  # More intelligent and accurate
+                model="gpt-4o",  # Most intelligent model for smart guidance
                 messages=messages,
-                temperature=0.8,  # Slightly higher for more natural conversation
-                max_tokens=800,  # Increased for more detailed responses
-                presence_penalty=0.1,  # Encourage topic diversity
-                frequency_penalty=0.1  # Reduce repetition
+                temperature=0.8,  # Higher for more natural, conversational responses
+                max_tokens=2000,  # Generous for detailed explanations
+                presence_penalty=0.3,  # Encourage exploring topics
+                frequency_penalty=0.4  # Reduce repetition
             )
             ai_response = response.choices[0].message.content
         else:
-            ai_response = "AI Assistant is not configured (missing OPENAI_API_KEY). I can still encrypt/decrypt if you provide the required info and say 'confirm'."
+            ai_response = "AI Assistant is not configured (missing OPENAI_API_KEY). However, I can still guide you! Use the Encrypt or Decrypt pages in the navigation menu to perform cryptographic operations."
         
-        # Parse current message
-        parsed = parse_ai_response(user_message)
-        
-        # Auto-encrypt immediately if encryption action detected (no confirmation needed)
-        # For decryption, still require confirmation for safety
-        normalized = user_message.strip().lower()
-        
-        # Confirmation only needed for decryption
-        confirmation_words = ["confirm", "proceed", "go ahead", "do it", "yes", "okay", "ok"]
-        has_confirmation = any(word in normalized for word in confirmation_words)
-        
-        # If confirmation given, look through conversation history for the message and settings
-        if has_confirmation:
-            # Extract from entire conversation history
-            full_conversation = " ".join([msg.get("content", "") for msg in chat_message.conversation_history])
-            parsed_history = parse_ai_response(full_conversation + " " + user_message)
-            
-            # Merge with current parse
-            if not parsed["message"] and parsed_history["message"]:
-                parsed["message"] = parsed_history["message"]
-            if not parsed["password"] and parsed_history["password"]:
-                parsed["password"] = parsed_history["password"]
-            if not parsed["encrypted_data"] and parsed_history["encrypted_data"]:
-                parsed["encrypted_data"] = parsed_history["encrypted_data"]
-            if not parsed["encrypted_emoji"] and parsed_history["encrypted_emoji"]:
-                parsed["encrypted_emoji"] = parsed_history["encrypted_emoji"]
-            if parsed_history["generate_qr"]:
-                parsed["generate_qr"] = True
-            if parsed_history["method"] != "text":
-                parsed["method"] = parsed_history["method"]
-            if parsed_history["expiry_hours"] != 24:
-                parsed["expiry_hours"] = parsed_history["expiry_hours"]
-
-        # If we have an encrypted payload and confirmation, execute decryption
-        if parsed["action"] == "decrypt" and has_confirmation:
-            if not parsed["password"]:
-                return ChatResponse(
-                    response=f"{ai_response}\n\n❌ Missing password. Please provide it (e.g. password: MyPass123!) and say 'confirm'.",
-                    action="error"
-                )
-
-            try:
-                engine = EncryptionEngine()
-
-                encrypted_data: Optional[Dict[str, Any]] = None
-                if parsed["encrypted_emoji"]:
-                    emoji_encoder = EmojiEncoder()
-                    encrypted_data = emoji_encoder.decode(parsed["encrypted_emoji"])
-                elif parsed["encrypted_data"]:
-                    encrypted_data = parsed["encrypted_data"]
-                else:
-                    return ChatResponse(
-                        response=f"{ai_response}\n\n❌ Missing encrypted payload. Paste the emoji ciphertext or the JSON (ciphertext/salt/nonce/tag), then say 'confirm'.",
-                        action="error"
-                    )
-
-                plaintext = engine.decrypt(encrypted_data, parsed["password"])
-                return ChatResponse(
-                    response=f"{ai_response}\n\n✅ Decryption complete!",
-                    action="decrypt_complete",
-                    data={
-                        "plaintext": plaintext
-                    }
-                )
-            except ValueError as e:
-                return ChatResponse(
-                    response=f"{ai_response}\n\n❌ Decryption failed: {str(e)}",
-                    action="error"
-                )
-            except Exception as e:
-                return ChatResponse(
-                    response=f"{ai_response}\n\n❌ Decryption failed: {str(e)}",
-                    action="error"
-                )
-        
-        # Auto-encrypt when message is detected (no confirmation needed)
-        if parsed["message"] and parsed["action"] == "encrypt":
-            # ALWAYS generate password (ignore user-provided)
-            password = generate_secure_password()
-            
-            try:
-                # Perform encryption
-                engine = EncryptionEngine()
-                encrypted_result = engine.encrypt(parsed["message"], password)
-                
-                # ALWAYS use emoji format
-                emoji_encoder = EmojiEncoder()
-                emoji_text = emoji_encoder.encode(encrypted_result)
-                encrypted_result["emoji"] = emoji_text
-                
-                result_data = {
-                    "password": password,
-                    "encrypted": encrypted_result,
-                    "method": "emoji",  # Always emoji
-                    "generate_qr": False  # Never generate QR codes
-                }
-                
-                # QR code generation disabled - emoji format only
-                if False:  # Disabled
-                    try:
-                        # Create QR token
-                        token = QRToken.generate_token()
-                        expires_at = QRToken.calculate_expiry(parsed["expiry_hours"])
-                        
-                        qr_token = QRToken(
-                            token=token,
-                            encrypted_message=json.dumps(encrypted_result),
-                            expires_at=expires_at
-                        )
-                        
-                        db.add(qr_token)
-                        db.commit()
-                        db.refresh(qr_token)
-                        
-                        # Generate QR code URL
-                        qr_url = f"{settings.FRONTEND_URL}/qr/{token}"
-                        
-                        # Generate QR code image
-                        qr = qrcode.QRCode(
-                            version=1,
-                            error_correction=qrcode.constants.ERROR_CORRECT_L,
-                            box_size=10,
-                            border=4,
-                        )
-                        qr.add_data(qr_url)
-                        qr.make(fit=True)
-                        
-                        img = qr.make_image(fill_color="black", back_color="white")
-                        img_io = io.BytesIO()
-                        img.save(img_io, 'PNG')
-                        img_io.seek(0)
-                        
-                        qr_image_b64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
-                        
-                        result_data["qr_code"] = {
-                            "url": qr_url,
-                            "image": qr_image_b64,
-                            "token": token,
-                            "expires_at": expires_at.isoformat()
-                        }
-                    except Exception as qr_error:
-                        # QR generation failed, but encryption succeeded
-                        result_data["qr_error"] = str(qr_error)
-                
-                return ChatResponse(
-                    response=f"{ai_response}\n\n✅ Encryption complete!",
-                    action="encrypt_complete",
-                    data=result_data
-                )
-            except Exception as e:
-                return ChatResponse(
-                    response=f"I encountered an error while encrypting: {str(e)}. Could you try rephrasing your request?",
-                    action="error"
-                )
-        
-        # Return AI response for conversation
+        # Return pure conversational response - AI guides, doesn't execute
         return ChatResponse(
             response=ai_response,
-            action="continue"
+            action="guide"
         )
         
     except openai.OpenAIError as e:
